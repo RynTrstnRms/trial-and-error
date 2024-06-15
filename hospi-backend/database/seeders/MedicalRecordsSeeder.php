@@ -20,8 +20,8 @@ class MedicalRecordsSeeder extends Seeder
         // Let's generate 20 medical records for demonstration
         for ($i = 0; $i < 20; $i++) {
             Medical_Record::create([
-                'patient_id' => rand(1,2), // Assuming patients exist with IDs 1 to 10
-                'doctor_id' => rand(2,3),   // Assuming doctors exist with IDs 1 to 5
+                'patient_id' => rand(3,4), // Assuming patients exist with IDs 1 to 10
+                'doctor_id' => rand(2,4),   // Assuming doctors exist with IDs 1 to 5
                 'visit_date' => $faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d'),
                 'diagnosis' => $faker->sentence,
                 'treatment' => $faker->paragraph,
