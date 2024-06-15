@@ -73,7 +73,7 @@ const DoctorManagement = ({ currentUser }) => {
                 <div className="mt-3">
                     <div className="d-flex justify-content-between align-items-center">
                         <h5>Doctor Details</h5>
-                        <Button variant="primary" onClick={() => setShowModal(true)}>
+                        <Button variant="primary" className='mb-2' onClick={() => setShowModal(true)}>
                             Edit Profile
                         </Button>
                     </div>
