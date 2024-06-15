@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Modal, Button, Form, Table } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AppointmentManagement = ({ currentUser }) => {
     const [appointments, setAppointments] = useState([]);
@@ -11,6 +13,7 @@ const AppointmentManagement = ({ currentUser }) => {
         reason: ''
     });
     const [activeEdit, setActiveEdit] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         fetchPatientId();
@@ -105,6 +108,7 @@ const AppointmentManagement = ({ currentUser }) => {
             });
             fetchAppointments(patientId);
             setNewAppointment({ doctor_id: '', appointment_date: '', reason: '' });
+            setShowModal(false);
         } catch (error) {
             console.error('Error booking appointment:', error);
         }
@@ -134,7 +138,7 @@ const AppointmentManagement = ({ currentUser }) => {
             <div className="my-4">
                 <h4>Your Appointments</h4>
                 <div className="table-responsive">
-                    <table className="table table-bordered table-hover">
+                    <Table bordered hover>
                         <thead className="thead-dark">
                             <tr>
                                 <th>Appointment Date</th>
@@ -149,9 +153,8 @@ const AppointmentManagement = ({ currentUser }) => {
                                 <tr key={appointment.id}>
                                     <td>
                                         {activeEdit === appointment.id ? (
-                                            <input
+                                            <Form.Control
                                                 type="date"
-                                                className="form-control"
                                                 value={appointment.appointment_date}
                                                 onChange={(e) => handleChange('appointment_date', e.target.value, appointment)}
                                             />
@@ -163,9 +166,8 @@ const AppointmentManagement = ({ currentUser }) => {
                                     <td>{appointment.status}</td>
                                     <td>
                                         {activeEdit === appointment.id ? (
-                                            <input
+                                            <Form.Control
                                                 type="text"
-                                                className="form-control"
                                                 value={appointment.reason}
                                                 onChange={(e) => handleChange('reason', e.target.value, appointment)}
                                             />
@@ -175,53 +177,68 @@ const AppointmentManagement = ({ currentUser }) => {
                                     </td>
                                     <td>
                                         {activeEdit === appointment.id ? (
-                                            <button className="btn btn-success mr-2" onClick={() => saveAppointmentChanges(appointment)}>Save</button>
+                                            <Button variant="success" className="mr-2" onClick={() => saveAppointmentChanges(appointment)}>Save</Button>
                                         ) : (
                                             <>
-                                                <button className="btn btn-primary mr-2" onClick={() => handleEdit(appointment)}>Edit</button>
-                                                <button className="btn btn-danger" onClick={() => cancelAppointment(appointment.id)}>Cancel</button>
+                                                <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(appointment)}>Edit</Button>
+                                                <Button variant="danger" size="sm" onClick={() => cancelAppointment(appointment.id)}>Cancel</Button>
                                             </>
                                         )}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
-                    </table>
+                    </Table>
                 </div>
             </div>
             <div className="my-4">
                 <h4>Schedule New Appointment</h4>
-                <div className="form-group">
-                    <select
-                        className="form-control"
-                        value={newAppointment.doctor_id}
-                        onChange={(e) => setNewAppointment({ ...newAppointment, doctor_id: e.target.value })}
-                    >
-                        <option value="">Select Doctor</option>
-                        {doctors.map(doctor => (
-                            <option key={doctor.id} value={doctor.id}>{`${doctor.first_name} ${doctor.last_name}`}</option>
-                        ))}
-                    </select>
-                </div>
-                <div className="form-group">
-                    <input
-                        type="date"
-                        className="form-control"
-                        value={newAppointment.appointment_date}
-                        onChange={(e) => setNewAppointment({ ...newAppointment, appointment_date: e.target.value })}
-                    />
-                </div>
-                <div className="form-group">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Reason"
-                        value={newAppointment.reason}
-                        onChange={(e) => setNewAppointment({ ...newAppointment, reason: e.target.value })}
-                    />
-                </div>
-                <button className="btn btn-primary" onClick={bookAppointment}>Book Appointment</button>
+                <Button variant="primary" onClick={() => setShowModal(true)}>Book Appointment</Button>
             </div>
+
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Book Appointment</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group controlId="doctorSelect">
+                            <Form.Label>Select Doctor</Form.Label>
+                            <Form.Control
+                                as="select"
+                                value={newAppointment.doctor_id}
+                                onChange={(e) => setNewAppointment({ ...newAppointment, doctor_id: e.target.value })}
+                            >
+                                <option value="">Select Doctor</option>
+                                {doctors.map(doctor => (
+                                    <option key={doctor.id} value={doctor.id}>{`${doctor.first_name} ${doctor.last_name}`}</option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="appointmentDate">
+                            <Form.Label>Appointment Date</Form.Label>
+                            <Form.Control
+                                type="date"
+                                value={newAppointment.appointment_date}
+                                onChange={(e) => setNewAppointment({ ...newAppointment, appointment_date: e.target.value })}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="appointmentReason">
+                            <Form.Label>Reason</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Reason"
+                                value={newAppointment.reason}
+                                onChange={(e) => setNewAppointment({ ...newAppointment, reason: e.target.value })}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
+                    <Button variant="primary" onClick={bookAppointment}>Book Appointment</Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };
