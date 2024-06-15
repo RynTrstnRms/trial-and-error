@@ -164,10 +164,10 @@ const AppointmentManagement = ({ currentUser }) => {
             ) : appointment.reason}</td>
             <td>
               {editAppointmentId === appointment.id ? (
-                <button class="btn btn-primary btn-sm" onClick={() => handleSaveEdit(appointment.id)}>Save</button>
+                <button class="btn btn-success btn-sm" onClick={() => handleSaveEdit(appointment.id)}>Save</button>
               ) : (
                 <>
-                  <button class="btn btn-info btn-sm" onClick={() => handleEdit(appointment.id)}>Edit</button>
+                  <button class="btn btn-warning btn-sm" onClick={() => handleEdit(appointment.id)}>Edit</button>
                 </>
               )}
             </td>
